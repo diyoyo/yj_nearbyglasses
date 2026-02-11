@@ -1,4 +1,4 @@
-package com.example.nearbyglasses
+package ch.pocketpc.nearbyglasses
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -138,3 +138,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
