@@ -1,4 +1,4 @@
-package com.example.nearbyglasses
+package ch.pocketpc.nearbyglasses
 
 import android.bluetooth.le.ScanResult
 
@@ -20,3 +20,4 @@ object Heuristics {
         return if (n.isBlank()) "(unbenannt)" else n
     }
 }
+
