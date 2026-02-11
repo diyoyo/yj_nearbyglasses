@@ -1,4 +1,4 @@
-package com.example.nearbyglasses
+package ch.pocketpc.nearbyglasses
 
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
@@ -144,3 +144,4 @@ class BleScanService : Service() {
         }
     }
 }
+
