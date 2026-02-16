@@ -1,5 +1,6 @@
 # yj_nearbyglasses
 attempting to detect smart glasses nearby and warn you.
+<img width="270" height="600" align ="right" alt="Screenshot Nearby Glasses" src="https://github.com/user-attachments/assets/17565448-b285-4841-b07e-ba0dabe0b181" />
 
 # Nearby Glasses 
 The app, called *Nearby Glasses*, has one sole purpose: Look for smart glasses nearby and warn you.
