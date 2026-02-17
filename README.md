@@ -7,27 +7,25 @@ The app, called *Nearby Glasses*, has one sole purpose: Look for smart glasses n
 
 This app notifies you when smart glasses are nearby. It uses company identificators in the Bluetooth data sent out by these. Therefore, there likely are false positives (e.g. from VR headsets). Hence, please proceed with caution when approaching a person nearby wearing glasses. They might just be regular glasses, despite this app’s warning.
         
-The app’s author [Yves Jeanrenaud](https://yves.app) takes no liability whatsoever for this app nor it’s functionality. Use at your own risk. By technical design, detecting Bluetooth LE devices might sometimes just not work as expected. I am no graduated developer. This is all written in my free time and with knowledge I tought myself.<br/>
+The app’s author [Yves Jeanrenaud](https://yves.app) takes no liability whatsoever for this app nor it’s functionality. Use at your own risk. By technical design, detecting Bluetooth LE devices might sometimes just not work as expected. I am no graduated developer. This is all written in my free time and with knowledge I taught myself.<br/>
 **False positives are likely.** This means, the app *Nearby Glasses* may notify you of smart glasses nearby when there might be in fact a VR headset of the same manufacturer or another product of that company’s breed. It may also miss smart glasses nearby. Again: I am no pro developer.<br/>
 However, this app is free and open source (foss), you may review the code, change it and re-use it (under the [license](LICENSE)).<br/>
-The app *Nearby Glasses* does not store any details about you or collects any information about you or your phone. There are no telemetry, no ads, and no other nuisance. If you install the app via Play Store, Google may know something about you and collect some stats. But the app itsself does not. <br/>
-If you choose to store (export) the logfile, that is completely up to you and your liability where this data go to. The logs are recorded only locally and not automatically shared with anyone. They do contain little sensitive data; in fact, only the manufacturer ID codes of BTLE devices encountered.<br/>
+The app *Nearby Glasses* does not store any details about you or collects any information about you or your phone. There are no telemetry, no ads, and no other nuisance. If you install the app via Play Store, Google may know something about you and collect some stats. But the app itself does not. <br/>
+If you choose to store (export) the logfile, that is completely up to you and your liability where this data go to. The logs are recorded only locally and not automatically shared with anyone. They do contain little sensitive data; in fact, only the manufacturer ID codes of BLE devices encountered.<br/>
 <br/>
-**Use with extreme caution!** As stated before: There is no guarantee, detected smart glasses are really nearby. It might be another device looking technically (on the BTLE adv level) similar to smart glasses.<br/>
+**Use with extreme caution!** As stated before: There is no guarantee that detected smart glasses are really nearby. It might be another device looking technically (on the BLE adv level) similar to smart glasses.<br/>
 Please do not act rashly. **Think before you act upon any messages** (not only from this app).<br/>
-<br/>
-**App Icon**: The icon is based on [Eyeglass icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/eyeglass)<br/>
-**License**:  This app *Nearby Glasses* is licensed under [PolyForm Noncommercial License 1.0.0](LICENSE).<br/>
 <br/>
 ## Why?
 - Because I consider smart glasses an intolerable intrusion, consent neglecting, horrible piece of tech that is already used for making various and tons of equally truely disgusting 'content'. [1](https://www.404media.co/border-patrol-agent-recorded-raid-with-metas-ray-ban-smart-glasses/), [2](https://www.404media.co/metas-ray-ban-glasses-users-film-and-harass-massage-parlor-workers/)
-- Some smart glasses feature small LED signifing a recording is going on. But this is easily disabled, whilst manufacturers claim to prevent that and take no responsibility at all (tech tends to do that for decades now). [3](https://www.404media.co/how-to-disable-meta-rayban-led-light/)
-- Smart glasses have been used for instant facial recognition before [4](https://www.404media.co/someone-put-facial-recognition-tech-onto-metas-smart-glasses-to-instantly-dox-strangers/) and repordedly will be out of the box [5](https://www.nytimes.com/2026/02/13/technology/meta-facial-recognition-smart-glasses.html). This puts a lot of people in danger.
-
+- Some smart glasses feature small LED signifying a recording is going on. But this is easily disabled, whilst manufacturers claim to prevent that and take no responsibility at all (tech tends to do that for decades now). [3](https://www.404media.co/how-to-disable-meta-rayban-led-light/)
+- Smart glasses have been used for instant facial recognition before [4](https://www.404media.co/someone-put-facial-recognition-tech-onto-metas-smart-glasses-to-instantly-dox-strangers/) and reportedly will be out of the box [5](https://www.nytimes.com/2026/02/13/technology/meta-facial-recognition-smart-glasses.html). This puts a lot of people in danger.
+- I hope this is app is useful for someone.
+  
 ## How?
-- It's a simple rather heurisitc approach. Because BTLE uses randomised MAC and the OSSID are not stable, nor the UUID of the service annoucement, you can't just scan for the bluetooth beacons. And, to make thinks even more dire, some like Meta, for instance, use proprietary Bluetooth services and UUIDs are not persistent, ~~we can only rely on the communicated device names for now~~.
-- The currently **most viable approach** comes from the [Bluetooth SIG assigned numbers repo](www.bluetooth.com/specifications/assigned-numbers/). Following this, the manufacturer company's name shows up as number codes in the packet advertising header (ADV) of BTLE beacons.
- - this is what BTLE advertising frames look like:
+- It's a simple rather heuristic approach. Because BLE uses randomised MAC and the OSSID are not stable, nor the UUID of the service announcements, you can't just scan for the bluetooth beacons. And, to make thinks even more dire, some like Meta, for instance, use proprietary Bluetooth services and UUIDs are not persistent, ~~we can only rely on the communicated device names for now~~.
+- The currently **most viable approach** comes from the [Bluetooth SIG assigned numbers repo](www.bluetooth.com/specifications/assigned-numbers/). Following this, the manufacturer company's name shows up as number codes in the packet advertising header (ADV) of BLE beacons.
+ - this is what BLE advertising frames look like:
 ```
 Frame 1: Advertising (ADV_IND)
 Time:  0.591232 s
@@ -48,17 +46,17 @@ Service UUIDs:
   Complete List of 16-bit Service UUIDs
   0xFEAA
 ```
-- According to [Bluetooth SIG assigned numbers repo](www.bluetooth.com/specifications/assigned-numbers/), we may use these company IDs:
+- According to the [Bluetooth SIG assigned numbers repo](www.bluetooth.com/specifications/assigned-numbers/), we may use these company IDs:
   - `0x01AB` for `Meta Platforms, Inc. (formerly Facebook)`
   - `0x058E` for `Meta Platforms Technologies, LLC`
   - `0x0D53` for `Luxottica Group S.p.A` (Who manufacturers the Meta Ray-Bans)
   - `0x03C2` for `Snapchat, Inc.`, that makes SNAP Spectacles
-  They are **immutable and mandatory**. Of course, Meta and other manufacturers also have other products that come with Bluetooth and therefore their ID, e.g. VR Headsets. Therefore, using these company ID codes for the app's scanning process is prone to false positives. But if you can't see someone wearing an occulus rift around you and there are no buildings where they could hide, chances are good that it's smart glasses instead.
-- During pairing, the smart glasses usually emmit their product name, so we can scan for that, too. But it's rare we will see that in the field. People with the intention to use smart glasses in bars, pubs, on the street, and elsewhere usually prepare for that beforehand.
-- When the app recognised a BTLE device with a sufficiant signal strength (see RSI below), it will push an alert message. This shall help you to act accordingly.
+  They are **immutable and mandatory**. Of course, Meta and other manufacturers also have other products that come with Bluetooth and therefore their ID, e.g. VR Headsets. Therefore, using these company ID codes for the app's scanning process is prone to false positives. But if you can't see someone wearing an Occulus Rift around you and there are no buildings where they could hide, chances are good that it's smart glasses instead.
+- During pairing, the smart glasses usually emit their product name, so we can scan for that, too. But it's rare we will see that in the field. People with the intention to use smart glasses in bars, pubs, on the street, and elsewhere usually prepare for that beforehand.
+- When the app recognised a Bluetooth Low Energy (BLE) device with a sufficient signal strength (see RSI below), it will push an alert message. This shall help you to act accordingly.
 
 ## Features
-- The app *Nearby Glasses* shows a notification when smart glasses are nearby (that means, a BTLE device of one of those company IDs mentioned above)
+- The app *Nearby Glasses* shows a notification when smart glasses are nearby (that means, a BLE device of one of those company IDs mentioned above)
 - **Nearby** means, the RSSI (signal strength) is less than or equal to a given value: -75 dBm by default. This default value corresponds to a medium distance and an ok-ish signal. Let me explain:<br/>
  RSSI depends mainly on<br/>
   - Device transmit power
@@ -66,7 +64,7 @@ Service UUIDs:
   - Walls and obstacles
   - Human bodies absorbing signal
   - Reflection and interference
-  - Device orientation
+  - Device orientation<br/>
 But typical BLE (Bluetooth Low Energy) scenarios, RSSI rough distance (open space) is: <br/>
   - -60 dBm ~ 1 – 3 m<br/>
   - -70 dBm ~ 3 – 10 m<br/>
@@ -77,17 +75,44 @@ Indoors, distances are often much shorter.<br/>
 RSSI drops roughly according to<br/>
     `RSSI ≈ -10 * n * log10(distance) + constant`<br/>
 - Therefore, the default RSSI threshold of -75 dBm corresponds to about 10 to 15 meters in open space and 3 to 10 meters indoors or in crowded spaces. You got a good chance to spot that smart glasses wearing person like that.
-- *Nearby Glasses* shows an optional debug log that is exportable (as txt file) and features a copy/passte function. Those are for advanced users and further debugging.
+- *Nearby Glasses* shows an optional debug log that is exportable (as txt file) and features a copy&paste function. Those are for advanced users (nerds) and for further debugging.
 - Under *Settings*, you may specify the log length, the debugging (display all scan items or only ADV frames).
-- You may also enter yourself some **company IDs** as string of hex values, e.g. `"0x01AB,0x058E,0x0D53`. This overrides the built-in detection so your notification shows up for the new value(s).
+- You may also enter yourself some **company IDs** as string of hex values, e.g. `"0x01AB,0x058E,0x0D53`. This overrides the built-in detection, so your notification shows up for the new value(s).
 - For better persistence, it uses Android's *Foreground Service*. You may disable this under *Settings* if you don't need it.
-- The *Notification Cooldown* under *Settings* specififies how much time must pass between two warnings. Default is 10000 ms, which is 10 s.
+- The *Notification Cooldown* under *Settings* specifies how much time must pass between two warnings. Default is 10000 ms, which is 10 s.
+
+## Usage
+
+- See [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) for APK to download. Google Play Store entry may follow soon
+<img width="270" height="600" align ="right" alt="Screenshot Nearby Glasses: Settings" src="https://github.com/user-attachments/assets/337343d9-6868-485b-9a9a-1d9a99ca9cf0" />
+
+1. Install the app (for now, you have to enable the installation from untrusted sources, unfortunately) and open it
+2. Hit the *Start Scanning* button
+3. Grant permissions to activate Bluetooth (if not already enabled) and to access devices nearby. Some versions of Android also need you to grant permissions to access your location (before Version 13, mostly). *Nearby Glasses* does nothing with your location info. If you don't believe me, please look at the code
+4. You're all set! When smart glasses are detected nearby, a notification will appear. It does so until you hit *Stop Scanning* or terminate the app for good
+5. In the menu (top right, the cogwheel), you may make some *Settings*:
+   1. *Enable Foreground Service*: By this, you prevent Android from pausing the app thus preventing it from alerting you. I recommend leaving this enabled
+   2. *RSSI threshold*: This negative number specifies how far away a device might be to be a reason for an alert by *Nearby Glasses*. Technically, it referes to how strong the signal is received. Closer to zero means better signal, hence fewer distance between your phone and the smart glasses. See [RSSI above for explanations and guidance](#how). I recommend leaving it on -75
+   3. *Enable Notifications*: You would not want to disable that
+   4. *Notification Cooldown*: Here, you specify, how many notifications about found smart glasses nearby you want to get. I chose 10 seconds (10000 ms) as default value. Like this, you won't miss the notification while at the same time won't be bothered by it too much or drain your battery too fast
+   5. *Enable Log Display*: Disabling this might spare you some battery
+   6. *Debug*: Is needed to see more than just the matching BLE frames in the log display frame. It's useful to see if things are working
+   7. *Max log lines*: How long the log may get. 200 seems to be a good balance between battery life and usability of the log (for nerds like me)
+   8. *BLE ADV only*: This excludes other Bluetooth LE frames from the log for better readability
+   9. *Override Company IDs*: If you want, you can let *Nearby Glasses* alert you of other devices than specified above. Useful for debugging, at least for me. Leave it empty if you don't need it or don't know what to do with it
+   10. Every setting is saved and effective immediately. To go back, use your back button or gesture
+6. The export function enables you to share a text-file of the app's log. For nerds like me
+7. You may also copy&paste the log by tapping on the log display frame
 
 ## Todos
-- **It's now working in the lab!** I need to debug it more with actuall smart glasses in the field.
+- **It's now working in the wild!** I managed to get some people testing it with verified  smart glasses around them. Special thanks to Lena!
 - See [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) for APK to download. 
-- I will push this app to Google Play, too. I still have some developer certificate around I could use for that. I will also always publish releases  here on GitHub and elsewhere for those that avoid the Play Store.
-- I am no BT or Android expert at all. For what I've learned, one could also dig deeper into the communication of the smart glasses by sniffing the BTLE traffic. By doing so, we would likely not need to rely on the device behaving according to the BT specifications, but could also use heurisitcs on the encrypted traffic transimssions without much false positives. But I haven't looked into BT traffic packets for more than ten years. I'm glad I remembered ADV frames...
-- move all hard-coded texts into `strings.xml` for easier localisation.
-- add **more manufacturers IDs** of smart glasses. Right now, it's mostly Meta.
-- an iOS app would be easy to adapt, too. But I don't have the toolchain at hands right now.
+- I pushed *Nearby Glasses* Google Play, too. However, I will always publish [releases here on GitHub](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) and [elsewhere](yves.app/nearbyglasses/latest.apk) for those that avoid the Google Play.
+- I am no BT or Android expert at all. For what I've learned, one could also dig deeper into the communication of the smart glasses by sniffing the BLE traffic. By doing so, we would likely not need to rely on the device behaving according to the BT specifications but could also use heuristics on the encrypted traffic transmissions without much false positives. But I haven't looked into BT traffic packets for more than ten years. I'm glad I remembered ADV frames... So if anybody could help on this, that'd be greatly appreciated!
+- Move all hard-coded texts into `strings.xml` for easier localisation. Right now, the app is available in English only.
+- Add **more manufacturers IDs** of smart glasses. Right now, it's Meta, Oakly and Snap.
+- An **iOS app** would be easy to adapt, too. But I don't have the toolchain at hands right now.
+
+## Licencse and Credits
+**App Icon**: The icon is based on [Eyeglass icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/eyeglass)<br/>
+**License**:  This app *Nearby Glasses* is licensed under [PolyForm Noncommercial License 1.0.0](LICENSE).<br/>
