@@ -7,13 +7,13 @@ This privacy policy provides information about the nature, scope and purpose of 
 
 ## 1. Responsible party
 
-The responsible party for this app is:
-**Yves Jeanrenaud, my PocketPC GmbH**
-Email: impressum@pocketpc.ch
-Address: Bergboden 7
-         6110 Wolhusen
-         Switzerland
-
+The responsible party for this app is:<br/>
+**Yves Jeanrenaud, my PocketPC GmbH**<br/>
+Email: impressum@pocketpc.ch<br/>
+Address: Bergboden 7<br/>
+         6110 Wolhusen<br/>
+         Switzerland<br/>
+<br/>
 ## 2. Principle
 
 The protection of your data is important.
