@@ -91,9 +91,10 @@ RSSI drops roughly according to<br/>
 <a href="https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses" target="_blank"><img width="239" height="71" alt="Get It On Google Play" src="https://github.com/user-attachments/assets/0feb46d1-969e-4f83-8fc7-c18d1bbed8ad" /></a>
 1. Install the app (from [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) or from [Google Play](https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses), for now) and open it
 2. Hit the *Start Scanning* button
-3. Grant permissions to activate Bluetooth (if not already enabled) and to access devices nearby. Some versions of Android also need you to grant permissions to access your location (before Version 13, mostly). *Nearby Glasses* does nothing with your location info. If you don't believe me, please look at the code
-4. You're all set! When smart glasses are detected nearby, a notification will appear. It does so until you hit *Stop Scanning* or terminate the app for good
-5. In the menu (top right, the cogwheel), you may make some *Settings*:
+3. Grant permissions to activate Bluetooth (if not already enabled) and to access devices nearby. Some versions of Android also need you to grant permissions to access your location (before Version 13, mostly). *Nearby Glasses* does nothing with your location info. If you don't believe me, please look at the [code](https://github.com/yjeanrenaud/yj_nearbyglasses/tree/main/app)
+4. if you don't see the scan starting, you might need to enable *Foreground Service* on your particular phone in the *Settings* menu (see below)
+5. You're all set! When smart glasses are detected nearby, a notification will appear. It does so until you hit *Stop Scanning* or terminate the app for good
+6. In the menu (top right, the cogwheel), you may make some *Settings*:
    1. *Enable Foreground Service*: By this, you prevent Android from pausing the app thus preventing it from alerting you. I recommend leaving this enabled
    2. *RSSI threshold*: This negative number specifies how far away a device might be to be a reason for an alert by *Nearby Glasses*. Technically, it referes to how strong the signal is received. Closer to zero means better signal, hence fewer distance between your phone and the smart glasses. See [RSSI above for explanations and guidance](#how). I recommend leaving it on -75
    3. *Enable Notifications*: You would not want to disable that
@@ -104,8 +105,8 @@ RSSI drops roughly according to<br/>
    8. *BLE ADV only*: This excludes other Bluetooth LE frames from the log for better readability
    9. *Override Company IDs*: If you want, you can let *Nearby Glasses* alert you of other devices than specified above. Useful for debugging, at least for me. Leave it empty if you don't need it or don't know what to do with it
    10. Every setting is saved and effective immediately. To go back, use your back button or gesture
-6. The export function enables you to share a text-file of the app's log. For nerds like me
-7. You may also copy&paste the log by tapping on the log display frame
+7. The export function enables you to share a text-file of the app's log. For nerds like me
+8. You may also copy&paste the log by tapping on the log display frame
 
 ## Todos
 - **It's now working in the wild!** I managed to get some people testing it with verified  smart glasses around them. Special thanks to Lena!
