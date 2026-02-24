@@ -1,5 +1,7 @@
 package ch.pocketpc.nearbyglasses.scanner
 
+import ch.pocketpc.nearbyglasses.R
+
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
@@ -50,7 +52,8 @@ class BluetoothScanner(
         
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            Log.e(TAG, "Scan failed with error code: $errorCode")
+            //Log.e(TAG, "Scan failed with error code: $errorCode")
+            Log.e(TAG, context.getString(R.string.dbg_scan_failed, errorCode))
             _isScanning.value = false
         }
     }
@@ -58,19 +61,22 @@ class BluetoothScanner(
     @SuppressLint("MissingPermission")
     fun startScanning(): Boolean {
         if (!isBluetoothEnabled()) {
-            Log.w(TAG, "Bluetooth is not enabled")
+            //Log.w(TAG, "Bluetooth is not enabled")
+            Log.w(TAG, context.getString(R.string.dbg_bluetooth_disabled))
             return false
         }
         
         if (_isScanning.value) {
-            Log.w(TAG, "Already scanning")
+            //Log.w(TAG, "Already scanning")
+            Log.w(TAG, context.getString(R.string.dbg_already_scanning))
             return false
         }
         
         bleScanner = bluetoothAdapter?.bluetoothLeScanner
         
         if (bleScanner == null) {
-            Log.e(TAG, "BLE scanner not available")
+            //Log.e(TAG, "BLE scanner not available")
+            Log.e(TAG, context.getString(R.string.dbg_ble_not_available))
             return false
         }
         
@@ -86,13 +92,16 @@ class BluetoothScanner(
             bleScanner?.startScan(null, scanSettings, scanCallback)
             _isScanning.value = true
             if (debugEnabled) {
-                Log.i(TAG, "BLE scanning started. RSSI threshold=$rssiThreshold, mode=LOW_LATENCY")
+                //Log.i(TAG, "BLE scanning started. RSSI threshold=$rssiThreshold, mode=LOW_LATENCY")
+                Log.i(TAG, context.getString(R.string.dbg_ble_started_verbose, rssiThreshold))
             } else {
-                Log.i(TAG, "BLE scanning started with RSSI threshold: $rssiThreshold dBm")
+                //Log.i(TAG, "BLE scanning started with RSSI threshold: $rssiThreshold dBm")
+                Log.i(TAG, context.getString(R.string.dbg_ble_started_simple, rssiThreshold))
             }
             return true
         } catch (e: Exception) {
-            Log.e(TAG, "Error starting BLE scan", e)
+            //Log.e(TAG, "Error starting BLE scan", e)
+            Log.e(TAG, context.getString(R.string.dbg_ble_start_error),e)
             return false
         }
     }
@@ -106,9 +115,11 @@ class BluetoothScanner(
         try {
             bleScanner?.stopScan(scanCallback)
             _isScanning.value = false
-            Log.i(TAG, "BLE scanning stopped")
+            //Log.i(TAG, "BLE scanning stopped")
+            Log.i(TAG, context.getString(R.string.dbg_ble_stopped))
         } catch (e: Exception) {
-            Log.e(TAG, "Error stopping BLE scan", e)
+            //Log.e(TAG, "Error stopping BLE scan", e)
+            Log.e(TAG, context.getString(R.string.dbg_ble_stop_error),e)
         }
     }
     private var lastUiDebugAt = 0L
@@ -126,8 +137,11 @@ class BluetoothScanner(
         // Check RSSI threshold
         if (result.rssi < rssiThreshold) {
             if (debugEnabled) {
-                Log.d(TAG, "Filtered by RSSI: ${result.device.address} rssi=${result.rssi}")
-                d("Filtered RSSI addr=${result.device.address} rssi=${result.rssi}")
+                //Log.d(TAG, "Filtered by RSSI: ${result.device.address} rssi=${result.rssi}")
+                Log.d(TAG,context.getString(R.string.dbg_filtered_rssi,result.device.address, result.rssi)
+                )
+                //d("Filtered RSSI addr=${result.device.address} rssi=${result.rssi}")
+                d(context.getString(R.string.dbg_filtered_rssi,result.device.address, result.rssi))
             }
             return
         }
@@ -163,29 +177,59 @@ class BluetoothScanner(
             manufacturerDataHex = data.joinToString("") { "%02X".format(it) }
         }
         //just d(...) is to fast for most UI
-        val companyIdStr = companyId?.let { "0x%04X".format(it) } ?: "none"
+        //val companyIdStr = companyId?.let { "0x%04X".format(it) } ?: "none"
         //dThrottled("ADV addr=$deviceAddress name=${deviceName ?: "?"} rssi=${result.rssi} companyId=$companyIdStr")
-        dThrottled("ADV addr=$deviceAddress name=${deviceName ?: "?"} " + "rssi=${result.rssi} companyId=$companyIdStr len=${manufacturerDataHex?.length?.div(2) ?: 0}"
+        //dThrottled("ADV addr=$deviceAddress name=${deviceName ?: "?"} " + "rssi=${result.rssi} companyId=$companyIdStr len=${manufacturerDataHex?.length?.div(2) ?: 0}")
+        val nameSafe = deviceName ?: context.getString(R.string.dbg_placeholder_unknown)
+        val companySafe = companyId?.let { "0x%04X".format(it) }
+            ?: context.getString(R.string.dbg_placeholder_none)
+        dThrottled(
+            context.getString(
+                R.string.dbg_adv_short,
+                deviceAddress,
+                nameSafe,
+                result.rssi,
+                companySafe,
+                manufacturerDataHex?.length?.div(2) ?: 0
+            )
         )
 
         // for to check if this is a smart glasses device (including our debug override)
-        val (isSmartGlassesReal, reasonReal) = DetectionEvent.isSmartGlasses(companyId, deviceName)
+        val (isSmartGlassesReal, reasonReal) = DetectionEvent.isSmartGlasses(context,companyId, deviceName)
         //val overrideMatch = companyId != null && debugCompanyIds.contains(companyId)
         //only when debug is on AND company IDs are entered
         val overrideMatch = debugEnabled && companyId != null && debugCompanyIds.contains(companyId)
 
         val isSmartGlasses = isSmartGlassesReal || overrideMatch
         val reason = when {
-            overrideMatch -> "Debug override: Company ID 0x%04X matched".format(companyId)
+            //overrideMatch -> "Debug override: Company ID 0x%04X matched".format(companyId)
+            overrideMatch -> context.getString(
+                R.string.reason_debug_override_company_id,
+                "0x%04X".format(companyId)
+            )
             else -> reasonReal
         }
 
         if (debugEnabled) {
-            Log.d(
+            /*Log.d(
                 TAG,
                 "ADV addr=$deviceAddress name=${deviceName ?: "?"} rssi=${result.rssi} " +
                         "companyId=${companyId?.let { "0x%04X".format(it) } ?: "none"} " +
                         "mfgLen=${manufacturerDataHex?.length?.div(2) ?: 0} smartglasses=$isSmartGlasses reason=$reason"
+            )*/
+
+            Log.d(
+                TAG,
+                context.getString(
+                    R.string.dbg_adv_full,
+                    deviceAddress,
+                    nameSafe,
+                    result.rssi,
+                    companySafe,
+                    manufacturerDataHex?.length?.div(2) ?: 0,
+                    isSmartGlasses,
+                    reason
+                )
             )
         }
 
@@ -196,12 +240,15 @@ class BluetoothScanner(
                 deviceName = deviceName,
                 rssi = result.rssi,
                 companyId = companyId?.let { "0x${String.format("%04X", it)}" },
-                companyName = companyId?.let { DetectionEvent.getCompanyName(it) } ?: "Unknown",
+                //companyName = companyId?.let { DetectionEvent.getCompanyName(context,it) } ?: "Unknown",
+                companyName = companyId?.let { DetectionEvent.getCompanyName(context, it) }
+                    ?: context.getString(R.string.company_unknown_plain),
                 manufacturerData = manufacturerDataHex,
                 detectionReason = reason
             )
             
-            Log.d(TAG, "smart glasses detected: ${event.deviceName} (${event.rssi} dBm)")
+            //Log.d(TAG, "smart glasses detected: ${event.deviceName} (${event.rssi} dBm)")
+            Log.d(TAG,context.getString(R.string.dbg_smart_glasses_detected,event.deviceName ?: context.getString(R.string.dbg_placeholder_unknown),event.rssi))
             onDeviceDetected(event)
         }
     }

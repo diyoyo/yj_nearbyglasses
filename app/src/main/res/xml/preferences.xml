@@ -7,7 +7,7 @@
         app:iconSpaceReserved="false">
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="foreground_service"
             android:summary="@string/summaryForeground"
             android:title="@string/titleForeground"
@@ -22,6 +22,13 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="false" />
 
+        <ListPreference
+            android:key="app_language"
+            android:title="@string/pref_language_title"
+            android:summary="@string/pref_language_summary"
+            android:entries="@array/pref_language_entries"
+            android:entryValues="@array/pref_language_values"
+            android:defaultValue="" />
     </PreferenceCategory>
 
     <PreferenceCategory

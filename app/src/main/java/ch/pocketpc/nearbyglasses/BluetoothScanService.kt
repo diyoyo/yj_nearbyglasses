@@ -37,7 +37,8 @@ class BluetoothScanService : Service() {
         super.onCreate()
         preferencesManager = PreferencesManager(this)
         notificationHelper = NotificationHelper(this)
-        Log.d(TAG, "Service created")
+        //Log.d(TAG, "Service created")
+        Log.d(TAG, getString(R.string.log_service_created))
     }
     
     override fun onBind(intent: Intent?): IBinder {
@@ -92,7 +93,8 @@ class BluetoothScanService : Service() {
 
     fun startScanning() {
         if (bluetoothScanner?.isScanning?.value == true) {
-            Log.w(TAG, "Already scanning")
+            //Log.w(TAG, "Already scanning")
+            Log.w(TAG, getString(R.string.log_already_scanning))
             return
         }
         
@@ -128,9 +130,11 @@ class BluetoothScanService : Service() {
         serviceScope.launch {
             val success = bluetoothScanner?.startScanning() ?: false
             if (success) {
-                Log.i(TAG, "Scanning started successfully")
+                //Log.i(TAG, "Scanning started successfully")
+                Log.i(TAG, getString(R.string.log_scanning_started))
             } else {
-                Log.e(TAG, "Failed to start scanning")
+                //Log.e(TAG, "Failed to start scanning")
+                Log.e(TAG, getString(R.string.log_scanning_failed))
             }
         }
     }
@@ -160,7 +164,8 @@ class BluetoothScanService : Service() {
             }
             lastNotificationTime = currentTime
         } else {
-            Log.d(TAG, "Detection within cooldown period, notification suppressed")
+            //Log.d(TAG, "Detection within cooldown period, notification suppressed")
+            Log.d(TAG, getString(R.string.log_notification_suppressed))
         }
     }
     
@@ -180,7 +185,8 @@ class BluetoothScanService : Service() {
         super.onDestroy()
         stopScanning()
         serviceScope.cancel()
-        Log.d(TAG, "Service destroyed")
+        //Log.d(TAG, "Service destroyed")
+        Log.d(TAG, getString(R.string.log_service_destroyed))
     }
     
     companion object {

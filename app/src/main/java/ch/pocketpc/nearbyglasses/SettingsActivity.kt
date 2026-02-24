@@ -3,9 +3,12 @@ package ch.pocketpc.nearbyglasses
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
-import androidx.core.text.HtmlCompat
+//import androidx.core.text.HtmlCompat
 import androidx.preference.EditTextPreference
-import android.widget.EditText
+//import android.widget.EditText
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import androidx.preference.ListPreference
 
 class SettingsActivity : AppCompatActivity() {
     
@@ -54,7 +57,8 @@ class SettingsActivity : AppCompatActivity() {
                 val ids = debugIdsPref?.text?.trim().orEmpty()
                 debugIdsPref?.summary = getString(
                     R.string.summaryDebugCompanyIds,
-                    if (ids.isBlank()) "(none)" else ids
+                    //if (ids.isBlank()) "(none)" else ids
+                    if (ids.isBlank()) getString(R.string.none_in_parentheses) else ids
                 )
             }
 
@@ -116,13 +120,34 @@ class SettingsActivity : AppCompatActivity() {
                 val s = (newValue as? String)?.trim().orEmpty()
                 pref.summary = getString(
                     R.string.summaryDebugCompanyIds,
-                    if (s.isBlank()) "(none)" else s
+                    //if (s.isBlank()) "(none)" else s
+                    if (s.isBlank()) getString(R.string.none_in_parentheses) else s
                 )
+                true
+            }
+            // now get current language
+            val languagePref = findPreference<ListPreference>("app_language")
+            val currentLang = AppCompatDelegate.getApplicationLocales().toLanguageTags() // Get current app language
+            languagePref?.value = currentLang // Set selected value, if emtpy, sets to system default)
+
+            languagePref?.setOnPreferenceChangeListener { _, newValue ->
+                val langTag = newValue as String
+                applyAppLanguage(langTag)
                 true
             }
 
             // set initial summaries
             refreshSummaries()
+        }
+
+        private fun applyAppLanguage(tag: String) {
+            val locales = if (tag.isBlank()) {
+                LocaleListCompat.getEmptyLocaleList() // follow system
+            } else {
+                LocaleListCompat.forLanguageTags(tag) // e.g. "de"
+            }
+            AppCompatDelegate.setApplicationLocales(locales)
+            requireActivity().recreate() // to make sure they update
         }
     }
 }

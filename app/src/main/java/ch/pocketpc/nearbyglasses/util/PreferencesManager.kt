@@ -24,12 +24,12 @@ class PreferencesManager(context: Context) {
         //set default values
         private const val DEFAULT_RSSI_THRESHOLD = -75
         private const val DEFAULT_COOLDOWN_MS = 10000L // 10 seconds
-        private const val DEFAULT_FOREGROUND_SERVICE = false
+        private const val DEFAULT_FOREGROUND_SERVICE = true
         private const val DEFAULT_NOTIFICATIONS = true
         private const val DEFAULT_LOGGING_ENABLED = true
         private const val DEFAULT_DEBUG_ENABLED = false
         private const val DEFAULT_DEBUG_MAX_LINES = 200
-        private const val DEFAULT_DEBUG_ADVONLY = false
+        private const val DEFAULT_DEBUG_ADVONLY = true
     }
     
     var rssiThreshold: Int

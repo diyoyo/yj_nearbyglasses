@@ -32,10 +32,10 @@ class NotificationHelper(private val context: Context) {
             // Detection channel (high priority)
             val detectionChannel = NotificationChannel(
                 CHANNEL_ID_DETECTION,
-                "Smart Glasses Detection Alerts",
+                context.getString(R.string.channel_detection_name), //"Smart Glasses Detection Alerts",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Alerts when smart glasses are detected"
+                description = context.getString(R.string.channel_detection_description) //description = "Alerts when smart glasses are detected"
                 enableVibration(true)
                 setShowBadge(true)
             }
@@ -43,10 +43,10 @@ class NotificationHelper(private val context: Context) {
             // Service channel (low priority)
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID_SERVICE,
-                "Background Scanning Service",
+                context.getString(R.string.channel_service_name), //"Background Scanning Service",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Shows when the app is scanning in the background"
+                description = context.getString(R.string.channel_service_description) //description = "Shows when the app is scanning in the background"
                 setShowBadge(false)
             }
             
@@ -67,20 +67,37 @@ class NotificationHelper(private val context: Context) {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        
+        val deviceName = event.deviceName
+            ?: context.getString(R.string.notification_unknown_device)
+
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_DETECTION)
             .setSmallIcon(R.drawable.ic_warning)
 
             .setContentTitle(context.getString(R.string.notifyText)) //@string/notifyText
-            .setContentText("${event.deviceName ?: "Unknown device"} detected (RSSI: ${event.rssi} dBm)")
+            //.setContentText("${event.deviceName ?: "Unknown device"} detected (RSSI: ${event.rssi} dBm)")
+            .setContentText(
+                context.getString(
+                    R.string.notification_detected_text,
+                    deviceName,
+                    event.rssi
+                )
+            )
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText(buildString {
+                    /*.bigText(buildString {
                         append("Device: ${event.deviceName ?: "Unknown"}\n")
                         append("RSSI: ${event.rssi} dBm\n")
                         append("Reason: ${event.detectionReason}\n")
                         append("Company: ${event.companyName}")
-                    })
+                    })*/
+                    .bigText(context.getString(
+                            R.string.notification_bigtext,
+                            deviceName,
+                            event.rssi,
+                            event.detectionReason,
+                            event.companyName
+                        )
+                    )
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -103,8 +120,10 @@ class NotificationHelper(private val context: Context) {
         
         return NotificationCompat.Builder(context, CHANNEL_ID_SERVICE)
             .setSmallIcon(R.drawable.ic_bluetooth_searching)
-            .setContentTitle("Scanning for smart glasses nearby")
-            .setContentText("Background scanning is active")
+            //.setContentTitle("Scanning for smart glasses nearby")
+            //.setContentText("Background scanning is active")
+            .setContentTitle(context.getString(R.string.notification_service_title))
+            .setContentText(context.getString(R.string.notification_service_text))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setOngoing(true)

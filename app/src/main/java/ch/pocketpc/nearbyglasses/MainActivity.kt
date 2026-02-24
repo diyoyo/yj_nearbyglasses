@@ -23,6 +23,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+//material3
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import android.graphics.Color
+import android.util.TypedValue
+///
 import ch.pocketpc.nearbyglasses.databinding.ActivityMainBinding
 import ch.pocketpc.nearbyglasses.model.DetectionEvent
 import ch.pocketpc.nearbyglasses.util.PreferencesManager
@@ -82,7 +90,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private fun copyToClipboard(label: String, text: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(ClipData.newPlainText(label, text))
-        Toast.makeText(this, "Copied: $text", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Copied: $text", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.clipboard_copied, text), Toast.LENGTH_SHORT).show()
     }
 
     private val detectionListener: (DetectionEvent) -> Unit = { event ->
@@ -108,7 +117,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (result.resultCode == RESULT_OK) {
             startScanningProcess()
         } else {
-            Toast.makeText(this, "Bluetooth must be enabled", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Bluetooth must be enabled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_bluetooth_required), Toast.LENGTH_SHORT).show()
         }
     }
     private fun appendLine(line: String) {
@@ -130,15 +140,34 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         // Build the display text only when needed
         return logLines.joinToString(separator = "\n", postfix = if (logLines.isNotEmpty()) "\n" else "")
     }
+    //for material design
+    private fun setupEdgeToEdgeAppBar() {
+        window.statusBarColor = getColorFromAttr(com.google.android.material.R.attr.colorPrimary) // Make the status bar area blend with your toolbar
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false //primary colour is dark, so we need light icons
+        // Apply the status bar inset as top padding to the AppBarLayout
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appbar) { v, insets ->
+            val top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, top, v.paddingRight, v.paddingBottom)
+            insets
+        }
+    }
 
+    private fun getColorFromAttr(attrColor: Int): Int {
+        val typedValue = TypedValue()
+        theme.resolveAttribute(attrColor, typedValue, true)
+        return typedValue.data
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false) //material 4
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
         preferencesManager = PreferencesManager(this)
         preferencesManager.registerListener(this)
-        
+
+        setupEdgeToEdgeAppBar()
         setupToolbar()
         setupUI()
         updateLogDisplay()
@@ -187,7 +216,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                         val tappedLine = fullText.substring(start, end).trim()
 
                         if (tappedLine.isNotEmpty()) {
-                            copyToClipboard("NearbyGlassesLogLine", tappedLine)
+                            //copyToClipboard("NearbyGlassesLogLine", tappedLine)
+                            copyToClipboard(getString(R.string.clipboard_label_log_line), tappedLine)
                             return true // handled tap
                         }
                     }
@@ -200,7 +230,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         // Optional: long-press copies entire log
         binding.textLog.setOnLongClickListener {
             val text = binding.textLog.text?.toString().orEmpty()
-            if (text.isNotBlank()) copyToClipboard("NearbyGlassesLog", text)
+            if (text.isNotBlank()) {
+                //copyToClipboard("NearbyGlassesLog", text)
+                copyToClipboard(getString(R.string.clipboard_label_log), text)
+            }
             true
         }
 
@@ -224,7 +257,15 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (!preferencesManager.loggingEnabled) return
 
         val timestamp = dateFormat.format(Date(event.timestamp))
-        val line = "[$timestamp] ${event.deviceName ?: "Unknown"} (${event.rssi} dBm) - ${event.detectionReason}"
+        //val line = "[$timestamp] ${event.deviceName ?: "Unknown"} (${event.rssi} dBm) - ${event.detectionReason}"
+        val deviceName = event.deviceName ?: getString(R.string.log_unknown_device)
+        val line = getString(
+            R.string.log_detection_line,
+            timestamp,
+            deviceName,
+            event.rssi,
+            event.detectionReason
+        )
         appendLine(line)
         updateLogDisplay()
 
@@ -253,7 +294,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             }
 
             val timestamp = dateFormat.format(Date())
-            appendLine("[$timestamp] DEBUG: $msg")
+            //appendLine("[$timestamp] DEBUG: $msg")
+            appendLine(getString(R.string.log_debug_line,timestamp,getString(R.string.log_debug_prefix),msg))
             /*
             val line = "[$timestamp] DEBUG: $msg\n"
             //logTextBuffer.append(line)
@@ -343,7 +385,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         
         if (bluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not supported on this device", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this, "Bluetooth is not supported on this device", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.toast_bluetooth_not_supported), Toast.LENGTH_LONG).show()
             return
         }
         
@@ -413,16 +456,18 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     
     private fun clearLog() {
         AlertDialog.Builder(this)
-            .setTitle("Clear Log")
-            .setMessage("Are you sure you want to clear all detection logs?")
-            .setPositiveButton("Clear") { _, _ ->
+            .setTitle(R.string.dialog_clear_log_title) //.setTitle("Clear Log")
+            .setMessage(R.string.dialog_clear_log_message) //.setMessage("Are you sure you want to clear all detection logs?")
+            //.setPositiveButton("Clear") { _, _ ->
+            .setPositiveButton(R.string.dialog_clear) { _, _ ->
                 detectionLog.clear()
                 //logTextBuffer.clear()
                 logLines.clear()
                 updateLogDisplay()
-                Toast.makeText(this, "Log cleared", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Log cleared", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_log_cleared), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.dialog_cancel, null) //.setNegativeButton("Cancel", null)
             .show()
     }
     
@@ -472,8 +517,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             shareFile(file)*/
             
         } catch (e: Exception) {
-            Log.e(TAG, "Error exporting log", e)
-            Toast.makeText(this, "Error exporting log: ${e.message}", Toast.LENGTH_LONG).show()
+            //Log.e(TAG, "Error exporting log", e)
+            Log.e(TAG, getString(R.string.dbg_export_error),e)
+            //Toast.makeText(this, "Error exporting log: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,getString(R.string.toast_export_error, e.message ?: e.javaClass.simpleName),Toast.LENGTH_LONG).show()
         }
     }
     
@@ -491,20 +538,21 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         
-        startActivity(Intent.createChooser(intent, "Export Detection Log"))
+        //startActivity(Intent.createChooser(intent, "Export Detection Log"))
+        startActivity(Intent.createChooser(intent, getString(R.string.chooser_export_log)))
     }
     
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Permissions Required")
-            .setMessage("This app requires Bluetooth and Location permissions to scan for devices. Please grant permissions in Settings.")
-            .setPositiveButton("Open Settings") { _, _ ->
+            .setTitle(R.string.dialog_permissions_title) //.setTitle("Permissions Required")
+            .setMessage(R.string.dialog_permissions_message) //.setMessage("This app requires Bluetooth and Location permissions to scan for devices. Please grant permissions in Settings.")
+            .setPositiveButton(R.string.dialog_open_settings) { _, _ ->  //.setPositiveButton("Open Settings") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", packageName, null)
                 }
                 startActivity(intent)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.dialog_cancel, null) //.setNegativeButton("Cancel", null)
             .show()
     }
     
