@@ -99,7 +99,7 @@ RSSI drops roughly according to<br/>
 ## Usage
 
 - See [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) for APK to download or use Google Play Store. F-Droid and/or Accrescent may follow.
-<img width="270" height="600" align ="right" alt="Screenshot Nearby Glasses: Settings" src="[https://github.com/user-attachments/assets/337343d9-6868-485b-9a9a-1d9a99ca9cf0](https://github.com/yjeanrenaud/yj_nearbyglasses/blob/main/img/Screenshot%20Nearby%20Glasses%20(8).png)" />
+<img width="270" height="600" align ="right" alt="Screenshot Nearby Glasses: Settings" src="https://github.com/yjeanrenaud/yj_nearbyglasses/blob/main/img/Screenshot%20Nearby%20Glasses%20(8).png" />
 
 <a href="https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses" target="_blank"><img width="239" height="71" alt="Get It On Google Play" src="https://github.com/user-attachments/assets/0feb46d1-969e-4f83-8fc7-c18d1bbed8ad" /></a>
 1. Install the app (from [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) or from [Google Play](https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses), for now) and open it
