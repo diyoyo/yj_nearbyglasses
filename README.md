@@ -9,8 +9,19 @@ attempting to detect smart glasses nearby and warn you.
 
 # Nearby Glasses 
 The app, called *Nearby Glasses*, has one sole purpose: Look for smart glasses nearby and warn you.
-
 <a href="https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses" target="_blank"><img width="239" height="71" alt="Get It On Google Play" src="https://github.com/user-attachments/assets/0feb46d1-969e-4f83-8fc7-c18d1bbed8ad" /></a>
+
+# Table of contents
+ * [Nearby Glasses](#Nearby-Glasses)
+  * [Why?](#why)
+  * [How?](#how)
+  * [Features](#features)
+    * [What's RSSI?](#whats-rssi)
+  * [Usage](#usage)
+  * [ToDos](#todos)
+  * [Tech-Solutionism?](#tech-solutionism)
+  * [Shoutouts](#shoutouts)
+  * [License and Credits](#license-and-credits)
 
 This app notifies you when smart glasses are nearby. It uses company identificators in the Bluetooth data sent out by these. Therefore, there likely are false positives (e.g. from VR headsets). Hence, please proceed with caution when approaching a person nearby wearing glasses. They might just be regular glasses, despite this app’s warning.
         
@@ -64,8 +75,11 @@ Service UUIDs:
 
 ## Features
 - The app *Nearby Glasses* shows a notification when smart glasses are nearby (that means, a BLE device of one of those company IDs mentioned above)
-- **Nearby** means, the RSSI (signal strength) is less than or equal to a given value: -75 dBm by default. This default value corresponds to a medium distance and an ok-ish signal. Let me explain:<br/>
- RSSI depends mainly on<br/>
+- **Nearby** means, the RSSI (signal strength) is less than or equal to a given value: -75 dBm by default. This default value corresponds to a medium distance and an ok-ish signal.
+  ### What's RSSI?
+- Let me explain a bit that RSSI-Value:<br/>
+RSSI is short for Received Signal Strength Indication. The value is an indication for the reception field strength of wireless communication applications. [Wikipedia has a quite good article](https://en.wikipedia.org/wiki/Received_signal_strength_indicator) about it.
+In short, RSSI depends mainly on:<br/>
   - Device transmit power
   - Antenna design
   - Walls and obstacles
@@ -121,7 +135,7 @@ RSSI drops roughly according to<br/>
 7. The export function enables you to share a text-file of the app's log. For nerds like me
 8. You may also copy&paste the log by tapping on the log display frame
 
-## Todos
+## ToDos
 - **It's now working in the wild!** I managed to get some people testing it with verified smart glasses around them. Special thanks to Lena!
 - See [Releases](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) for APK to download. 
 - I pushed [*Nearby Glasses* to Google Play](https://play.google.com/store/apps/details?id=ch.pocketpc.nearbyglasses), too. However, I will always publish [releases here on GitHub](https://github.com/yjeanrenaud/yj_nearbyglasses/releases) and [elsewhere](https://yves.app/nearbyglasses/latest.apk), for those that avoid the Google Play.
