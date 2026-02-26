@@ -136,6 +136,10 @@ RSSI drops roughly according to<br/>
 - An **iOS app** might be possible, too. I have the toolchain now, but I will need a Mac to submit it to the Apple App Store in the end. And I need to dig deeper into iOS development-
 - There **layout issue** with **Google Pixel devices** seems to be fixed as of Version 1.0.3. If you still can't reach the menu as it's mixed with the status bar somehow. Will look into that asap. Meanwhile, try to put your screen to landscape mode and rotate *clockwise (to the right)*. 
 
+## Tech-Solutionism?
+I know, this might be an odd place to do so, but just hear me out on this. I am aware this is a technical solution to a social problem, which is itsself amplified by tech.
+I do not want to promote techsolutionism nor do I want people to feel falsely secure. It's still an imperfect approach and propably always will be. It's not all good only because this app exists now. We need better solutions to curb on surveilance tech and privacy intrution.
+
 ## Shoutouts
 - [@vfrmedia@social.tchncs.de](https://social.tchncs.de/@vfrmedia) for helping me with the warnings
 - [@mewsleah@meow.social](https://meow.social/@mewsleah) for pointing out the idea of a canary mode (yet to be implemented)
