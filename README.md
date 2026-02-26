@@ -139,7 +139,8 @@ RSSI drops roughly according to<br/>
 ## Shoutouts
 - [@vfrmedia@social.tchncs.de](https://social.tchncs.de/@vfrmedia) for helping me with the warnings
 - [@mewsleah@meow.social](https://meow.social/@mewsleah) for pointing out the idea of a canary mode (yet to be implemented)
-- @pojntfx for pointing out my misunderstandings with licensing
+- [@pojntfx](https://github.com/pojntfx) for pointing out my misunderstandings with licensing
+- [Sarah-Jane B.](https://www.linkedin.com/in/sarah-janeb/) for UX design tipps
 - All that already provided feedback to the app
 
 ## License and Credits
