@@ -56,25 +56,12 @@ class BluetoothScanService : Service() {
     private fun startForegroundService() {
         val notification = notificationHelper.createServiceNotification()
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                /*startForeground(
-                    NotificationHelper.NOTIFICATION_ID_SERVICE,
-                    notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
-                )*/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    startForeground(
-                        NotificationHelper.NOTIFICATION_ID_SERVICE,
-                        notification,
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
-                    )
-                } else {
-                    startForeground(NotificationHelper.NOTIFICATION_ID_SERVICE, notification)
-                }
-            } else {
-                startForeground(NotificationHelper.NOTIFICATION_ID_SERVICE, notification)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NotificationHelper.NOTIFICATION_ID_SERVICE,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            )
         } else {
             startForeground(NotificationHelper.NOTIFICATION_ID_SERVICE, notification)
         }
@@ -127,15 +114,14 @@ class BluetoothScanService : Service() {
             }
         )
         
-        serviceScope.launch {
-            val success = bluetoothScanner?.startScanning() ?: false
-            if (success) {
-                //Log.i(TAG, "Scanning started successfully")
-                Log.i(TAG, getString(R.string.log_scanning_started))
-            } else {
-                //Log.e(TAG, "Failed to start scanning")
-                Log.e(TAG, getString(R.string.log_scanning_failed))
-            }
+        // Removed coroutine launch to ensure isScanning() returns true immediately for UI updates
+        val success = bluetoothScanner?.startScanning() ?: false
+        if (success) {
+            //Log.i(TAG, "Scanning started successfully")
+            Log.i(TAG, getString(R.string.log_scanning_started))
+        } else {
+            //Log.e(TAG, "Failed to start scanning")
+            Log.e(TAG, getString(R.string.log_scanning_failed))
         }
     }
     
