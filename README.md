@@ -159,7 +159,7 @@ I do not want to promote techsolutionism nor do I want people to feel falsely se
 - [@mewsleah@meow.social](https://meow.social/@mewsleah) for pointing out the idea of a canary mode (yet to be implemented)
 - [@pojntfx](https://github.com/pojntfx) for pointing out my misunderstandings with licensing
 - [Sarah-Jane B.](https://www.linkedin.com/in/sarah-janeb/) for UX design tipps
-- All that already provided feedback to the app
+- All who already provided feedback to the app!
 
 ## License and Credits
 **App Icon**: The icon is based on [Eyeglass icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/eyeglass)<br/>
